@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Task</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --surface: #1e293b;
+      --background: #0f172a;
+      --text: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --border: #334155;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--background);
+      padding: 20px;
+      color: var(--text);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 20%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--surface);
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #60a5fa, #93c5fd);
+    }
+
+    h1 {
+      color: var(--text);
+      margin-bottom: 30px;
+      font-size: 2.2em;
+      font-weight: 700;
+      text-align: center;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.95em;
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+      background: var(--background);
+      color: var(--text);
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .form-group:focus-within label {
+      transform: scale(1.05);
+      color: var(--primary);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #64748b;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .category-input {
+      position: relative;
+    }
+
+    .category-input i {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      transition: color 0.3s ease;
+    }
+
+    .category-input:focus-within i {
+      color: var(--primary);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translate(-50%, -50%) scale(0);
+      border-radius: 50%;
+      transition: transform 0.5s ease;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+    }
+
+    button:hover::before {
+      transform: translate(-50%, -50%) scale(2);
+    }
+
+    input[type="date"] {
+      color-scheme: dark;
+    }
+
+    .progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      width: 100%;
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .progress::after {
+      content: '';
+      position: absolute;
+      height: 100%;
+      width: 100px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      animation: loading 2s infinite;
+    }
+
+    @keyframes loading {
+      0% { left: -100px; }
+      100% { left: 100%; }
+    }
+
+    .form-group.completed label::before {
+      content: '✓';
+      position: absolute;
+      right: -20px;
+      color: #10b981;
+      opacity: 0;
+      animation: fadeIn 0.3s forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+        margin: 10px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      button {
+        padding: 14px;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--background);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add completion check for form fields
+      const inputs = document.querySelectorAll('input:not([type="checkbox"]), textarea');
+      inputs.forEach(input => {
+        const formGroup = input.closest('.form-group');
+        if (input.value.trim() !== '') {
+          formGroup.classList.add('completed');
+        }
+        
+        input.addEventListener('blur', function() {
+          if (this.value.trim() !== '') {
+            formGroup.classList.add('completed');
+          } else {
+            formGroup.classList.remove('completed');
+          }
+        });
+      });
+
+      // Add floating label effect
+      const formGroups = document.querySelectorAll('.form-group');
+      formGroups.forEach(group => {
+        const input = group.querySelector('input:not([type="checkbox"]), textarea');
+        const label = group.querySelector('label');
+        if (!input || !label) return;
+
+        input.addEventListener('focus', () => {
+          label.style.color = '#3b82f6';
+        });
+
+        input.addEventListener('blur', () => {
+          label.style.color = input.value ? '#3b82f6' : '#cbd5e1';
+        });
+
+        // Set initial color if input has value
+        if (input.value) {
+          label.style.color = '#3b82f6';
+        }
+      });
+
+      // Modified form submission with animation and actual form submission
+      const form = document.querySelector('form');
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const button = this.querySelector('button');
+        button.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Updating...';
+        button.disabled = true;
+        
+        setTimeout(() => {
+          button.innerHTML = '<i class="fas fa-check"></i> Updated!';
+          button.style.background = '#10b981';
+          
+          setTimeout(() => {
+            const actualForm = document.createElement('form');
+            actualForm.method = 'POST';
+            actualForm.action = form.action;
+            
+            const formData = new FormData(form);
+            for(let [name, value] of formData.entries()) {
+              const input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = name;
+              input.value = value;
+              actualForm.appendChild(input);
+            }
+            
+            document.body.appendChild(actualForm);
+            actualForm.submit();
+          }, 500);
+        }, 1000);
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Task</h1>
+    <form action="/edit/<%= task.id %>" method="POST">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" value="<%= task.title %>" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description"><%= task.description %></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="due_date">Due Date</label>
+          <input type="date" id="due_date" name="due_date" value="<%= task.due_date %>">
+        </div>
+        <div class="form-group">
+          <label for="category">Category</label>
+          <div class="category-input">
+            <input type="text" id="category" name="category" value="<%= task.category %>">
+            <i class="fas fa-tag"></i>
+          </div>
+        </div>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="completed" name="completed" <%= task.completed ? 'checked' : '' %>>
+        <label for="completed">Completed</label>
+      </div>
+      <button type="submit">Update Task</button>
+    </form>
+    <div class="progress"></div>
+  </div>
+</body>
+</html>
